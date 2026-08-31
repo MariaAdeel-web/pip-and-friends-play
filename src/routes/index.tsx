@@ -95,7 +95,8 @@ function Home() {
                 return (
                   <li key={s.step}>
                     <Link
-                      to={s.to}
+                      to="/game/$gameId"
+                      params={{ gameId: s.gameId }}
                       onClick={() => {
                         completePathStep(s.step);
                         if (path.length + 1 === DAILY_PATH.length) setCelebrate(true);
