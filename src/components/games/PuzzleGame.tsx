@@ -49,17 +49,16 @@ export function PuzzleGame() {
   }, [total, board, theme, ph]);
 
   useEffect(() => {
-    if (pieces.length && pieces.every((p) => p.placed)) {
-      const t = setTimeout(() => {
-        sounds.celebrate();
-        if (level < 1) {
-          say("Wonderful! One more puzzle.");
-          setLevel((l) => l + 1);
-          setTheme(pick(PUZZLES));
-        } else setDone(true);
-      }, 600);
-      return () => clearTimeout(t);
-    }
+    if (!pieces.length || !pieces.every((p) => p.placed)) return undefined;
+    const t = setTimeout(() => {
+      sounds.celebrate();
+      if (level < 1) {
+        say("Wonderful! One more puzzle.");
+        setLevel((l) => l + 1);
+        setTheme(pick(PUZZLES));
+      } else setDone(true);
+    }, 600);
+    return () => clearTimeout(t);
   }, [pieces, level]);
 
   const slotFor = (i: number) => ({ x: (i % gridCols) * pw, y: Math.floor(i / gridCols) * ph });
