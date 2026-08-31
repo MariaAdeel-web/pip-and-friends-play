@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ParentsRouteImport } from './routes/parents'
 import { Route as PlayRouteImport } from './routes/play'
+import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as WorldsRouteImport } from './routes/worlds'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -18,9 +21,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ParentsRoute = ParentsRouteImport.update({
+  id: '/parents',
+  path: '/parents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlayRoute = PlayRouteImport.update({
   id: '/play',
   path: '/play',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorldsRoute = WorldsRouteImport.update({
+  id: '/worlds',
+  path: '/worlds',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GameGameIdRoute = GameGameIdRouteImport.update({
@@ -31,31 +49,51 @@ const GameGameIdRoute = GameGameIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/parents': typeof ParentsRoute
   '/play': typeof PlayRoute
+  '/rewards': typeof RewardsRoute
+  '/worlds': typeof WorldsRoute
   '/game/$gameId': typeof GameGameIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/parents': typeof ParentsRoute
   '/play': typeof PlayRoute
+  '/rewards': typeof RewardsRoute
+  '/worlds': typeof WorldsRoute
   '/game/$gameId': typeof GameGameIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/parents': typeof ParentsRoute
   '/play': typeof PlayRoute
+  '/rewards': typeof RewardsRoute
+  '/worlds': typeof WorldsRoute
   '/game/$gameId': typeof GameGameIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/play' | '/game/$gameId'
+  fullPaths:
+    '/' | '/parents' | '/play' | '/rewards' | '/worlds' | '/game/$gameId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/play' | '/game/$gameId'
-  id: '__root__' | '/' | '/play' | '/game/$gameId'
+  to: '/' | '/parents' | '/play' | '/rewards' | '/worlds' | '/game/$gameId'
+  id:
+    | '__root__'
+    | '/'
+    | '/parents'
+    | '/play'
+    | '/rewards'
+    | '/worlds'
+    | '/game/$gameId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ParentsRoute: typeof ParentsRoute
   PlayRoute: typeof PlayRoute
+  RewardsRoute: typeof RewardsRoute
+  WorldsRoute: typeof WorldsRoute
   GameGameIdRoute: typeof GameGameIdRoute
 }
 
@@ -68,11 +106,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/parents': {
+      id: '/parents'
+      path: '/parents'
+      fullPath: '/parents'
+      preLoaderRoute: typeof ParentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/play': {
       id: '/play'
       path: '/play'
       fullPath: '/play'
       preLoaderRoute: typeof PlayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/worlds': {
+      id: '/worlds'
+      path: '/worlds'
+      fullPath: '/worlds'
+      preLoaderRoute: typeof WorldsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/game/$gameId': {
@@ -87,7 +146,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ParentsRoute: ParentsRoute,
   PlayRoute: PlayRoute,
+  RewardsRoute: RewardsRoute,
+  WorldsRoute: WorldsRoute,
   GameGameIdRoute: GameGameIdRoute,
 }
 export const routeTree = rootRouteImport
