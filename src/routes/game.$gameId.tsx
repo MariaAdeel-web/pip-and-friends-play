@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ACTIVITIES } from "@/data/content";
 import { ColorsGame } from "@/components/games/ColorsGame";

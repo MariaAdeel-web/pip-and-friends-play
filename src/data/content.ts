@@ -233,11 +233,11 @@ export const WORLDS = [
 ];
 
 export const DAILY_PATH = [
-  { step: 1, label: "Learn a Color", to: "/game/colors" },
-  { step: 2, label: "Count to 5", to: "/game/numbers" },
-  { step: 3, label: "Match Shapes", to: "/game/shapes" },
-  { step: 4, label: "ABC Game", to: "/game/abc" },
-  { step: 5, label: "Memory Challenge", to: "/game/memory" },
+  { step: 1, label: "Learn a Color", gameId: "colors" },
+  { step: 2, label: "Count to 5", gameId: "numbers" },
+  { step: 3, label: "Match Shapes", gameId: "shapes" },
+  { step: 4, label: "ABC Game", gameId: "abc" },
+  { step: 5, label: "Memory Challenge", gameId: "memory" },
 ] as const;
 
 export const AVATARS = ["🧒", "👧", "🧑", "🦊", "🐼", "🐨", "🐸", "🦄"];

@@ -32,18 +32,17 @@ export function MemoryGame() {
   }, [deck]);
 
   useEffect(() => {
-    if (cards.length && cards.every((c) => c.matched)) {
-      const t = setTimeout(() => {
-        if (level < 2) {
-          sounds.celebrate();
-          say("Great! Let's try more cards.");
-          setLevel((l) => l + 1);
-        } else {
-          setDone(true);
-        }
-      }, 700);
-      return () => clearTimeout(t);
-    }
+    if (!cards.length || !cards.every((c) => c.matched)) return undefined;
+    const t = setTimeout(() => {
+      if (level < 2) {
+        sounds.celebrate();
+        say("Great! Let's try more cards.");
+        setLevel((l) => l + 1);
+      } else {
+        setDone(true);
+      }
+    }, 700);
+    return () => clearTimeout(t);
   }, [cards, level]);
 
   const flip = (id: number) => {
