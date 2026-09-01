@@ -48,6 +48,10 @@ export const Route = createFileRoute("/game/$gameId")({
 function GameRoute() {
   const { gameId } = Route.useParams();
   const Game = GAMES[gameId];
+  // Games randomise their rounds, so they mount only on the client to keep
+  // server and client markup identical.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   if (!Game) {
     return (
@@ -57,6 +61,15 @@ function GameRoute() {
         <Link to="/play" className="tap-pop min-h-14 rounded-3xl bg-primary px-6 py-4 text-lg font-bold text-primary-foreground">
           Back to activities
         </Link>
+      </div>
+    );
+  }
+
+  if (!mounted) {
+    return (
+      <div className="mx-auto flex min-h-[70vh] max-w-lg flex-col items-center justify-center gap-3 px-6 text-center">
+        <Character id="pip" state="idle" size={110} />
+        <p className="text-base font-bold text-muted-foreground font-display">Getting it ready...</p>
       </div>
     );
   }
