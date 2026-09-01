@@ -6,6 +6,12 @@ export function LoadingWorld({ onDone }: { onDone: () => void }) {
   const [awake, setAwake] = useState(false);
 
   useEffect(() => {
+    const seen = window.sessionStorage.getItem("tinytales.splash") === "1";
+    if (seen) {
+      onDone();
+      return undefined;
+    }
+    window.sessionStorage.setItem("tinytales.splash", "1");
     const a = setTimeout(() => setAwake(true), 1100);
     const b = setTimeout(onDone, 2100);
     return () => {
