@@ -4,8 +4,8 @@ import { Character } from "@/components/characters/Character";
 import { Card, Confetti } from "@/components/ui/Kit";
 import { ProfileSetup } from "@/components/profile/ProfileSetup";
 import { isSoundOn, setSoundOn, sounds } from "@/services/audio";
-import { completePathStep, todayKey, useProgress } from "@/services/progress";
-import { useEffect, useState } from "react";
+import { todayKey, useProgress } from "@/services/progress";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
