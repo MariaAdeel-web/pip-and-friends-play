@@ -97,21 +97,20 @@ function Home() {
                     <Link
                       to="/game/$gameId"
                       params={{ gameId: s.gameId }}
-                      onClick={() => {
-                        completePathStep(s.step);
-                        if (path.length + 1 === DAILY_PATH.length) setCelebrate(true);
-                      }}
-                      className="tap-pop flex min-h-14 items-center gap-3 rounded-2xl bg-card px-4 shadow-[var(--shadow-soft)]"
+                      onClick={() => sounds.tap()}
+                      className="tap-pop flex min-h-14 items-center gap-3 rounded-2xl bg-card px-4 py-2 shadow-[var(--shadow-soft)]"
                     >
-                      <span className="text-2xl">{done ? "✅" : "⭐"}</span>
+                      <span className="text-2xl" aria-hidden="true">{done ? "✅" : "⭐"}</span>
                       <span className={`font-bold ${done ? "text-muted-foreground line-through" : ""}`}>
                         Step {s.step} — {s.label}
                       </span>
+                      <span className="sr-only">{done ? "completed" : "not finished yet"}</span>
                     </Link>
                   </li>
                 );
               })}
             </ol>
+
           )}
         </Card>
       </section>
