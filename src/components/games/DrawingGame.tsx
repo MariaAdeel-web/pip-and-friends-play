@@ -23,6 +23,8 @@ export function DrawingGame() {
   const [stickers, setStickers] = useState<{ id: number; emoji: string; x: number; y: number }[]>([]);
   const [activeSticker, setActiveSticker] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
+  const awarded = useRef<Set<string>>(new Set());
+
 
   const complete = useMemo(
     () => picture.paths.every((_, i) => fills[i]),
