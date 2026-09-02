@@ -56,16 +56,17 @@ export function DrawingGame() {
       <BackBar title="Drawing Fun" />
       <Confetti show={finished} />
 
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Choose a picture to color">
         {COLORING.map((p, i) => (
           <button
             key={p.key}
             type="button"
+            aria-pressed={i === index}
             onClick={() => {
               sounds.tap();
               setIndex(i);
             }}
-            className={`tap-pop shrink-0 rounded-2xl px-4 py-2 text-sm font-bold shadow-[var(--shadow-soft)] ${
+            className={`tap-pop min-h-11 shrink-0 rounded-2xl px-4 py-2.5 text-sm font-bold shadow-[var(--shadow-soft)] ${
               i === index ? "bg-primary text-primary-foreground" : "bg-card"
             }`}
           >
@@ -73,6 +74,7 @@ export function DrawingGame() {
           </button>
         ))}
       </div>
+
 
       <div
         className="relative mt-3 rounded-[1.75rem] bg-card p-3 shadow-[var(--shadow-soft)]"
