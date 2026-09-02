@@ -30,14 +30,24 @@ function Home() {
   const { state, hydrated } = useProgress();
   const [sound, setSound] = useState(true);
   const [celebrate, setCelebrate] = useState(false);
+  const pathDone = state.dailyPath.date === todayKey() ? state.dailyPath.done.length : 0;
+  const wasComplete = useRef(false);
 
   useEffect(() => setSound(isSoundOn()), []);
+
+  // Celebrate the moment the last adventure step is actually finished.
+  useEffect(() => {
+    const complete = pathDone >= DAILY_PATH.length;
+    if (complete && !wasComplete.current) setCelebrate(true);
+    wasComplete.current = complete;
+  }, [pathDone]);
 
   if (!hydrated) return <div className="min-h-screen" />;
   if (!state.child) return <ProfileSetup />;
 
   const path = state.dailyPath.date === todayKey() ? state.dailyPath.done : [];
   const pathComplete = path.length >= DAILY_PATH.length;
+
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 pb-6">
