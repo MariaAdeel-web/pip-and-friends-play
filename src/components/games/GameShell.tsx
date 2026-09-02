@@ -5,11 +5,13 @@
  */
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 import { Character, type CharacterId, type AnimationState } from "@/components/characters/Character";
 import { BackBar, BigButton, Confetti, ProgressDots, Sparkles } from "@/components/ui/Kit";
+import { DAILY_PATH } from "@/data/content";
 import { randomEncourage, randomPraise, say, sounds } from "@/services/audio";
-import { completeActivity, recordAttempt, type Learned, type SkillKey } from "@/services/progress";
+import { completeActivity, completePathStep, recordAttempt, type Learned, type SkillKey } from "@/services/progress";
+
 
 export type Feedback = "none" | "correct" | "retry";
 
