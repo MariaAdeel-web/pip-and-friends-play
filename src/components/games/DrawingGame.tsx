@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { COLORING, COLORS } from "@/data/content";
 import { BackBar, BigButton, Confetti } from "@/components/ui/Kit";
 import { Character } from "@/components/characters/Character";
