@@ -41,9 +41,14 @@ export function DrawingGame() {
       setFinished(true);
       sounds.celebrate();
       say("Beautiful! Watch it move!");
-      completeActivity({ skill: "drawing", xp: 12, stars: 2 });
+      // Reward each picture once, so clearing and refilling can't farm stars.
+      if (!awarded.current.has(picture.key)) {
+        awarded.current.add(picture.key);
+        completeActivity({ skill: "drawing", xp: 12, stars: 2 });
+      }
     }
-  }, [complete, finished]);
+  }, [complete, finished, picture.key]);
+
 
   const paint = (i: number) => {
     setHistory((h) => [...h, fills]);
