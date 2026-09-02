@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, BigButton, ScreenTitle } from "@/components/ui/Kit";
 import { Character } from "@/components/characters/Character";
@@ -30,17 +30,21 @@ const SKILL_LABELS: Record<SkillKey, string> = {
 
 /** Simple arithmetic parent gate — keeps the area out of reach of little fingers. */
 function ParentGate({ onPass }: { onPass: () => void }) {
-  const [a] = useState(() => 3 + Math.floor(Math.random() * 6));
-  const [b] = useState(() => 2 + Math.floor(Math.random() * 7));
+  // Generated after mount so server and client markup stay identical.
+  const [q, setQ] = useState<{ a: number; b: number } | null>(null);
   const [value, setValue] = useState("");
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setQ({ a: 3 + Math.floor(Math.random() * 6), b: 2 + Math.floor(Math.random() * 7) });
+  }, []);
 
   return (
     <div className="mx-auto flex min-h-[70vh] w-full max-w-lg flex-col items-center justify-center gap-4 px-6 text-center">
       <Character id="tiko" state="thinking" size={110} />
       <h1 className="text-xl font-extrabold">Grown-ups only</h1>
       <p className="text-sm text-muted-foreground">
-        To continue, answer: what is {a} × {b}?
+        {q ? `To continue, answer: what is ${q.a} × ${q.b}?` : "Loading a quick question…"}
       </p>
       <input
         inputMode="numeric"
@@ -52,11 +56,14 @@ function ParentGate({ onPass }: { onPass: () => void }) {
         className="min-h-14 w-40 rounded-3xl border border-border bg-card text-center text-2xl font-extrabold outline-none focus:ring-4 focus:ring-ring/40"
         aria-label="Parent gate answer"
       />
-      {error && <p className="text-sm font-bold text-destructive">Not quite — try again.</p>}
-      <BigButton onClick={() => (Number(value) === a * b ? onPass() : setError(true))}>Continue</BigButton>
+      {error && <p className="text-sm font-bold text-destructive" role="alert">Not quite — try again.</p>}
+      <BigButton disabled={!q} onClick={() => (q && Number(value) === q.a * q.b ? onPass() : setError(true))}>
+        Continue
+      </BigButton>
     </div>
   );
 }
+
 
 function ParentsPage() {
   const [unlocked, setUnlocked] = useState(false);

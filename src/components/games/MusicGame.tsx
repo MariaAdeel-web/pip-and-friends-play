@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BackBar, BigButton, Card } from "@/components/ui/Kit";
+import { BackBar, BigButton, Card, ProgressDots } from "@/components/ui/Kit";
 import { Character } from "@/components/characters/Character";
 import { NOTES, say, sounds } from "@/services/audio";
 import { completeActivity } from "@/services/progress";
@@ -20,6 +20,8 @@ const PADS = [
   { note: "G5", color: "var(--sky)" },
   { note: "A5", color: "var(--lavender)" },
 ] as const;
+
+const GOAL = 3;
 
 export function MusicGame() {
   const [active, setActive] = useState<string | null>(null);
@@ -78,7 +80,7 @@ export function MusicGame() {
       const w = wins + 1;
       setWins(w);
       setPattern([]);
-      if (w === 3) completeActivity({ skill: "memory", xp: 12, stars: 2 });
+      if (w === GOAL) completeActivity({ skill: "memory", xp: 12, stars: 2 });
     }
   };
 
@@ -87,9 +89,20 @@ export function MusicGame() {
       <BackBar title="Music Garden" />
 
       <Card className="flex items-center gap-3">
-        <Character id="mimi" state={playing ? "excited" : "idle"} size={70} />
-        <p className="text-lg font-bold font-display">{status ?? (pattern.length ? "Now you play it!" : "Tap to make music!")}</p>
+        <Character id="mimi" state={playing ? "excited" : wins >= GOAL ? "celebrate" : "idle"} size={70} />
+        <div className="min-w-0 flex-1">
+          <p className="text-lg font-bold font-display">
+            {status ?? (pattern.length ? "Now you play it!" : "Tap a pad to make music, or copy a rhythm!")}
+          </p>
+          <div className="mt-2 flex items-center gap-2">
+            <ProgressDots total={GOAL} done={Math.min(wins, GOAL)} />
+            <span className="text-xs font-bold text-muted-foreground">
+              {wins >= GOAL ? "Rhythm star! ⭐" : `${wins}/${GOAL} rhythms`}
+            </span>
+          </div>
+        </div>
       </Card>
+
 
       <div className="mt-4 grid grid-cols-3 gap-3">
         {PADS.map((p, i) => (
@@ -107,8 +120,8 @@ export function MusicGame() {
       </div>
 
       <div className="mt-4 flex gap-3">
-        <BigButton className="flex-1" onClick={newPattern} disabled={playing}>
-          🎶 Copy my rhythm
+        <BigButton className="flex-1 disabled:opacity-50" onClick={newPattern} disabled={playing}>
+          {wins >= GOAL ? "🎶 One more rhythm" : "🎶 Copy my rhythm"}
         </BigButton>
       </div>
 

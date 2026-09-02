@@ -52,15 +52,17 @@ export function BackBar({ title }: { title: string }) {
     <div className="safe-top sticky top-0 z-20 -mx-4 mb-3 flex items-center gap-3 bg-background/85 px-4 pb-2 backdrop-blur">
       <Link
         to="/play"
+        onClick={() => sounds.tap()}
         aria-label="Back to activities"
-        className="tap-pop flex size-12 items-center justify-center rounded-2xl bg-card text-xl shadow-[var(--shadow-soft)]"
+        className="tap-pop flex size-12 shrink-0 items-center justify-center rounded-2xl bg-card text-xl shadow-[var(--shadow-soft)]"
       >
-        ←
+        <span aria-hidden="true">←</span>
       </Link>
-      <h1 className="truncate text-xl font-extrabold">{title}</h1>
+      <h1 className="min-w-0 truncate text-xl font-extrabold">{title}</h1>
     </div>
   );
 }
+
 
 export function Sparkles({ show }: { show: boolean }) {
   if (!show) return null;

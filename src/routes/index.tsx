@@ -4,8 +4,8 @@ import { Character } from "@/components/characters/Character";
 import { Card, Confetti } from "@/components/ui/Kit";
 import { ProfileSetup } from "@/components/profile/ProfileSetup";
 import { isSoundOn, setSoundOn, sounds } from "@/services/audio";
-import { completePathStep, todayKey, useProgress } from "@/services/progress";
-import { useEffect, useState } from "react";
+import { todayKey, useProgress } from "@/services/progress";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,14 +30,24 @@ function Home() {
   const { state, hydrated } = useProgress();
   const [sound, setSound] = useState(true);
   const [celebrate, setCelebrate] = useState(false);
+  const pathDone = state.dailyPath.date === todayKey() ? state.dailyPath.done.length : 0;
+  const wasComplete = useRef(false);
 
   useEffect(() => setSound(isSoundOn()), []);
+
+  // Celebrate the moment the last adventure step is actually finished.
+  useEffect(() => {
+    const complete = pathDone >= DAILY_PATH.length;
+    if (complete && !wasComplete.current) setCelebrate(true);
+    wasComplete.current = complete;
+  }, [pathDone]);
 
   if (!hydrated) return <div className="min-h-screen" />;
   if (!state.child) return <ProfileSetup />;
 
   const path = state.dailyPath.date === todayKey() ? state.dailyPath.done : [];
   const pathComplete = path.length >= DAILY_PATH.length;
+
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 pb-6">
@@ -97,21 +107,20 @@ function Home() {
                     <Link
                       to="/game/$gameId"
                       params={{ gameId: s.gameId }}
-                      onClick={() => {
-                        completePathStep(s.step);
-                        if (path.length + 1 === DAILY_PATH.length) setCelebrate(true);
-                      }}
-                      className="tap-pop flex min-h-14 items-center gap-3 rounded-2xl bg-card px-4 shadow-[var(--shadow-soft)]"
+                      onClick={() => sounds.tap()}
+                      className="tap-pop flex min-h-14 items-center gap-3 rounded-2xl bg-card px-4 py-2 shadow-[var(--shadow-soft)]"
                     >
-                      <span className="text-2xl">{done ? "✅" : "⭐"}</span>
+                      <span className="text-2xl" aria-hidden="true">{done ? "✅" : "⭐"}</span>
                       <span className={`font-bold ${done ? "text-muted-foreground line-through" : ""}`}>
                         Step {s.step} — {s.label}
                       </span>
+                      <span className="sr-only">{done ? "completed" : "not finished yet"}</span>
                     </Link>
                   </li>
                 );
               })}
             </ol>
+
           )}
         </Card>
       </section>

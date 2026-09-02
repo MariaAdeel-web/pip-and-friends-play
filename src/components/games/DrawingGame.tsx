@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { COLORING, COLORS } from "@/data/content";
 import { BackBar, BigButton, Confetti } from "@/components/ui/Kit";
 import { Character } from "@/components/characters/Character";
@@ -23,6 +23,8 @@ export function DrawingGame() {
   const [stickers, setStickers] = useState<{ id: number; emoji: string; x: number; y: number }[]>([]);
   const [activeSticker, setActiveSticker] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
+  const awarded = useRef<Set<string>>(new Set());
+
 
   const complete = useMemo(
     () => picture.paths.every((_, i) => fills[i]),
@@ -41,9 +43,14 @@ export function DrawingGame() {
       setFinished(true);
       sounds.celebrate();
       say("Beautiful! Watch it move!");
-      completeActivity({ skill: "drawing", xp: 12, stars: 2 });
+      // Reward each picture once, so clearing and refilling can't farm stars.
+      if (!awarded.current.has(picture.key)) {
+        awarded.current.add(picture.key);
+        completeActivity({ skill: "drawing", xp: 12, stars: 2 });
+      }
     }
-  }, [complete, finished]);
+  }, [complete, finished, picture.key]);
+
 
   const paint = (i: number) => {
     setHistory((h) => [...h, fills]);
@@ -56,16 +63,17 @@ export function DrawingGame() {
       <BackBar title="Drawing Fun" />
       <Confetti show={finished} />
 
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Choose a picture to color">
         {COLORING.map((p, i) => (
           <button
             key={p.key}
             type="button"
+            aria-pressed={i === index}
             onClick={() => {
               sounds.tap();
               setIndex(i);
             }}
-            className={`tap-pop shrink-0 rounded-2xl px-4 py-2 text-sm font-bold shadow-[var(--shadow-soft)] ${
+            className={`tap-pop min-h-11 shrink-0 rounded-2xl px-4 py-2.5 text-sm font-bold shadow-[var(--shadow-soft)] ${
               i === index ? "bg-primary text-primary-foreground" : "bg-card"
             }`}
           >
@@ -73,6 +81,7 @@ export function DrawingGame() {
           </button>
         ))}
       </div>
+
 
       <div
         className="relative mt-3 rounded-[1.75rem] bg-card p-3 shadow-[var(--shadow-soft)]"

@@ -224,13 +224,17 @@ export const ACTIVITIES: Activity[] = [
 ];
 
 export const WORLDS = [
-  { key: "garden", name: "Learning Garden", emoji: "🌳", token: "var(--leaf)", character: "pip" as CharacterId },
-  { key: "rainbow", name: "Rainbow Valley", emoji: "🌈", token: "var(--coral)", character: "lulu" as CharacterId },
-  { key: "space", name: "Space Adventure", emoji: "🚀", token: "var(--lavender)", character: "tiko" as CharacterId },
-  { key: "ocean", name: "Ocean World", emoji: "🌊", token: "var(--sky)", character: "bobo" as CharacterId },
-  { key: "dino", name: "Dinosaur Valley", emoji: "🦖", token: "var(--mint)", character: "pip" as CharacterId },
-  { key: "cloud", name: "Cloud Kingdom", emoji: "☁️", token: "var(--peach)", character: "mimi" as CharacterId },
+  { key: "garden", name: "Learning Garden", emoji: "🌳", token: "var(--leaf)", character: "pip" as CharacterId, lessons: ["colors", "shapes", "numbers"] },
+  { key: "rainbow", name: "Rainbow Valley", emoji: "🌈", token: "var(--coral)", character: "lulu" as CharacterId, lessons: ["colors", "drawing", "story"] },
+  { key: "space", name: "Space Adventure", emoji: "🚀", token: "var(--lavender)", character: "tiko" as CharacterId, lessons: ["puzzle", "shapes", "memory"] },
+  { key: "ocean", name: "Ocean World", emoji: "🌊", token: "var(--sky)", character: "bobo" as CharacterId, lessons: ["numbers", "animals", "memory"] },
+  { key: "dino", name: "Dinosaur Valley", emoji: "🦖", token: "var(--mint)", character: "pip" as CharacterId, lessons: ["abc", "animals", "puzzle"] },
+  { key: "cloud", name: "Cloud Kingdom", emoji: "☁️", token: "var(--peach)", character: "mimi" as CharacterId, lessons: ["music", "story", "drawing"] },
 ];
+
+/** How many activities must be finished before world index `i` opens. */
+export const worldUnlockAt = (index: number) => index * 3;
+
 
 export const DAILY_PATH = [
   { step: 1, label: "Learn a Color", gameId: "colors" },

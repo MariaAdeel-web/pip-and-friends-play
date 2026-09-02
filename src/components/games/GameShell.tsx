@@ -5,11 +5,13 @@
  */
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 import { Character, type CharacterId, type AnimationState } from "@/components/characters/Character";
 import { BackBar, BigButton, Confetti, ProgressDots, Sparkles } from "@/components/ui/Kit";
+import { DAILY_PATH } from "@/data/content";
 import { randomEncourage, randomPraise, say, sounds } from "@/services/audio";
-import { completeActivity, recordAttempt, type Learned, type SkillKey } from "@/services/progress";
+import { completeActivity, completePathStep, recordAttempt, type Learned, type SkillKey } from "@/services/progress";
+
 
 export type Feedback = "none" | "correct" | "retry";
 
@@ -143,14 +145,20 @@ export function CompleteScreen({
   xp?: number;
   onPlayAgain: () => void;
 }) {
+  const params = useParams({ strict: false }) as { gameId?: string };
+  const gameId = params.gameId;
   const saved = useRef(false);
   useEffect(() => {
     if (saved.current) return;
     saved.current = true;
     completeActivity({ skill, xp, learned, stars: 3, gems: 1 });
+    // Today's adventure only ticks when the matching activity is truly finished.
+    const step = DAILY_PATH.find((s) => s.gameId === gameId);
+    if (step) completePathStep(step.step);
     sounds.celebrate();
     say("Amazing! You did it!");
-  }, [learned, skill, xp]);
+  }, [gameId, learned, skill, xp]);
+
 
   return (
     <div className="relative mx-auto flex min-h-[70vh] w-full max-w-lg flex-col items-center justify-center gap-4 px-6 text-center">
