@@ -78,7 +78,7 @@ export function MusicGame() {
       const w = wins + 1;
       setWins(w);
       setPattern([]);
-      if (w === 3) completeActivity({ skill: "memory", xp: 12, stars: 2 });
+      if (w === GOAL) completeActivity({ skill: "memory", xp: 12, stars: 2 });
     }
   };
 
@@ -87,9 +87,20 @@ export function MusicGame() {
       <BackBar title="Music Garden" />
 
       <Card className="flex items-center gap-3">
-        <Character id="mimi" state={playing ? "excited" : "idle"} size={70} />
-        <p className="text-lg font-bold font-display">{status ?? (pattern.length ? "Now you play it!" : "Tap to make music!")}</p>
+        <Character id="mimi" state={playing ? "excited" : wins >= GOAL ? "celebrate" : "idle"} size={70} />
+        <div className="min-w-0 flex-1">
+          <p className="text-lg font-bold font-display">
+            {status ?? (pattern.length ? "Now you play it!" : "Tap a pad to make music, or copy a rhythm!")}
+          </p>
+          <div className="mt-2 flex items-center gap-2">
+            <ProgressDots total={GOAL} done={Math.min(wins, GOAL)} />
+            <span className="text-xs font-bold text-muted-foreground">
+              {wins >= GOAL ? "Rhythm star! ⭐" : `${wins}/${GOAL} rhythms`}
+            </span>
+          </div>
+        </div>
       </Card>
+
 
       <div className="mt-4 grid grid-cols-3 gap-3">
         {PADS.map((p, i) => (
