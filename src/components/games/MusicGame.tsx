@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BackBar, BigButton, Card } from "@/components/ui/Kit";
+import { BackBar, BigButton, Card, ProgressDots } from "@/components/ui/Kit";
 import { Character } from "@/components/characters/Character";
 import { NOTES, say, sounds } from "@/services/audio";
 import { completeActivity } from "@/services/progress";
@@ -20,6 +20,8 @@ const PADS = [
   { note: "G5", color: "var(--sky)" },
   { note: "A5", color: "var(--lavender)" },
 ] as const;
+
+const GOAL = 3;
 
 export function MusicGame() {
   const [active, setActive] = useState<string | null>(null);
@@ -118,8 +120,8 @@ export function MusicGame() {
       </div>
 
       <div className="mt-4 flex gap-3">
-        <BigButton className="flex-1" onClick={newPattern} disabled={playing}>
-          🎶 Copy my rhythm
+        <BigButton className="flex-1 disabled:opacity-50" onClick={newPattern} disabled={playing}>
+          {wins >= GOAL ? "🎶 One more rhythm" : "🎶 Copy my rhythm"}
         </BigButton>
       </div>
 
