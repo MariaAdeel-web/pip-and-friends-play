@@ -89,9 +89,35 @@ export const sounds = {
 
 export { NOTES };
 
-/** Optional gentle voice feedback. Silently no-ops where unsupported. */
-export function say(text: string, opts: { rate?: number; pitch?: number } = {}) {
-  if (!isSoundOn()) return;
+/* ---------------- Voice narration ----------------
+ * Real AI voice (Lovable AI) with the device's built-in speech as a fallback.
+ * Each phrase is fetched once and reused, so repeated prompts are instant. */
+
+const voiceCache = new Map<string, Promise<string>>();
+let aiVoiceAvailable = true;
+let currentAudio: HTMLAudioElement | null = null;
+let sayToken = 0;
+
+async function fetchVoice(text: string): Promise<string> {
+  const cached = voiceCache.get(text);
+  if (cached) return cached;
+  const p = (async () => {
+    const res = await fetch("/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok) throw new Error(`voice ${res.status}`);
+    const blob = await res.blob();
+    if (!blob.size) throw new Error("empty voice");
+    return URL.createObjectURL(blob);
+  })();
+  voiceCache.set(text, p);
+  p.catch(() => voiceCache.delete(text));
+  return p;
+}
+
+function speakFallback(text: string, opts: { rate?: number; pitch?: number }) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   try {
     window.speechSynthesis.cancel();
@@ -104,6 +130,47 @@ export function say(text: string, opts: { rate?: number; pitch?: number } = {}) 
     /* voice is a progressive enhancement */
   }
 }
+
+/** Warm the cache so a phrase plays instantly when it is needed. */
+export function prefetchSay(...texts: string[]) {
+  if (typeof window === "undefined" || !aiVoiceAvailable || !isSoundOn()) return;
+  for (const t of texts) if (t) void fetchVoice(t).catch(() => undefined);
+}
+
+/** Gentle voice feedback. Silently no-ops where unsupported. */
+export function say(text: string, opts: { rate?: number; pitch?: number } = {}) {
+  if (!isSoundOn()) return;
+  if (typeof window === "undefined") return;
+
+  const token = ++sayToken;
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio = null;
+  }
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+
+  if (!aiVoiceAvailable) {
+    speakFallback(text, opts);
+    return;
+  }
+
+  void fetchVoice(text)
+    .then((url) => {
+      if (token !== sayToken || !isSoundOn()) return;
+      const audio = new Audio(url);
+      audio.volume = 0.95;
+      currentAudio = audio;
+      return audio.play().catch(() => {
+        // Autoplay blocked before the first tap — fall back quietly.
+        speakFallback(text, opts);
+      });
+    })
+    .catch(() => {
+      aiVoiceAvailable = false;
+      if (token === sayToken) speakFallback(text, opts);
+    });
+}
+
 
 export const PRAISE = ["Great job!", "Wonderful!", "You found it!", "Super!", "Amazing!"];
 export const ENCOURAGE = ["Let's try again!", "Almost! Try another one.", "Keep going!"];
