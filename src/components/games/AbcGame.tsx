@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { LETTERS, shuffle } from "@/data/content";
 import { CompleteScreen, GamePage, useGameRound } from "./GameShell";
 import { TracePad } from "./TracePad";
-import { say, sounds } from "@/services/audio";
-import { useProgress } from "@/services/progress";
+import { prefetchSay, say, sounds } from "@/services/audio";
+import { recordLetter, useProgress } from "@/services/progress";
+
 
 const ROUNDS = 5;
 
