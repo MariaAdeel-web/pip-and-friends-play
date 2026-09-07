@@ -174,3 +174,96 @@ function Metric({ label, value }: { label: string; value: string | number }) {
     </div>
   );
 }
+
+type LetterStatus = "mastered" | "practising" | "new";
+
+function letterStatus(
+  letter: string,
+  state: ReturnType<typeof useProgress>["state"],
+): { status: LetterStatus; attempts: number; correct: number; traced: number } {
+  const stat = state.letters[letter] ?? { correct: 0, attempts: 0, traced: 0 };
+  const known = state.learned.letters.includes(letter);
+  const rate = stat.attempts ? stat.correct / stat.attempts : 0;
+  const status: LetterStatus =
+    (known && stat.attempts === 0) || (stat.attempts >= 2 && rate >= 0.75)
+      ? "mastered"
+      : stat.attempts > 0
+        ? "practising"
+        : "new";
+  return { status, ...stat };
+}
+
+const STATUS_STYLE: Record<LetterStatus, string> = {
+  mastered: "bg-mint text-foreground border-transparent",
+  practising: "bg-peach text-foreground border-transparent",
+  new: "bg-muted/40 text-muted-foreground border-border",
+};
+
+const STATUS_LABEL: Record<LetterStatus, string> = {
+  mastered: "knows it",
+  practising: "still practising",
+  new: "not met yet",
+};
+
+/** A–Z learning path so grown-ups can see exactly which letters need work. */
+function AbcPath({ state }: { state: ReturnType<typeof useProgress>["state"] }) {
+  const rows = LETTERS.map((l) => ({ ...l, ...letterStatus(l.letter, state) }));
+  const mastered = rows.filter((r) => r.status === "mastered");
+  const practising = rows.filter((r) => r.status === "practising");
+  const notMet = rows.filter((r) => r.status === "new");
+  const pct = Math.round((mastered.length / LETTERS.length) * 100);
+
+  return (
+    <>
+      <h2 className="mb-3 mt-7 text-lg font-extrabold">ABC learning path</h2>
+      <Card className="flex flex-col gap-4">
+        <div>
+          <div className="mb-1 flex justify-between text-sm font-bold">
+            <span>{mastered.length} of 26 letters secure</span>
+            <span className="text-muted-foreground">{pct}%</span>
+          </div>
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
+            <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${pct}%` }} />
+          </div>
+        </div>
+
+        <ul className="grid grid-cols-7 gap-1.5 sm:grid-cols-9" aria-label="Progress for each letter A to Z">
+          {rows.map((r) => (
+            <li
+              key={r.letter}
+              title={`${r.letter} — ${STATUS_LABEL[r.status]}`}
+              aria-label={`${r.letter}: ${STATUS_LABEL[r.status]}${r.attempts ? `, ${r.correct} of ${r.attempts} correct` : ""}`}
+              className={`flex aspect-square flex-col items-center justify-center rounded-xl border text-sm font-extrabold font-display ${STATUS_STYLE[r.status]}`}
+            >
+              {r.letter}
+              <span className="text-[9px] font-bold opacity-70">
+                {r.attempts ? `${r.correct}/${r.attempts}` : "—"}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="flex flex-wrap gap-3 text-xs font-bold text-muted-foreground">
+          <span className="flex items-center gap-1.5"><i className="size-3 rounded bg-mint" /> Knows it</span>
+          <span className="flex items-center gap-1.5"><i className="size-3 rounded bg-peach" /> Practising</span>
+          <span className="flex items-center gap-1.5"><i className="size-3 rounded border border-border bg-muted/40" /> Not met yet</span>
+        </div>
+
+        <div className="flex flex-col gap-1 text-sm">
+          <p>
+            <strong>Needs practice:</strong>{" "}
+            {practising.length ? practising.map((r) => r.letter).join(" ") : "nothing yet — great going!"}
+          </p>
+          <p>
+            <strong>Coming up next:</strong>{" "}
+            {notMet.length ? notMet.slice(0, 8).map((r) => r.letter).join(" ") : "every letter has been met!"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Each letter is practised with its sound, a picture word, matching and tracing in ABC Adventure.
+          </p>
+        </div>
+      </Card>
+    </>
+  );
+}
+
