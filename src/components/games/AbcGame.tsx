@@ -127,6 +127,7 @@ export function AbcGame() {
               aria-label={o.word}
               onClick={() => {
                 const correct = o.letter === item.letter;
+                recordLetter(item.letter, correct);
                 if (correct) {
                   setLearned((l) => (l.includes(item.letter) ? l : [...l, item.letter]));
                   sounds.correct();
@@ -157,11 +158,13 @@ export function AbcGame() {
         <TracePad
           glyph={item.letter}
           onResult={(ok) => {
+            recordLetter(item.letter, ok, ok);
             if (ok) answer(true, { praise: `Beautiful ${item.letter}!` });
             else answer(false);
           }}
         />
       )}
+
 
       <section className="mt-6 rounded-[1.5rem] bg-card p-4 shadow-[var(--shadow-soft)]">
         <p className="mb-2 text-sm font-bold text-muted-foreground">
