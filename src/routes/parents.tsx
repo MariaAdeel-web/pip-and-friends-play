@@ -119,6 +119,9 @@ function ParentsPage() {
         <Metric label="Numbers" value={state.learned.numbers.length} />
       </div>
 
+      <AbcPath state={state} />
+
+
       <h2 className="mb-3 mt-7 text-lg font-extrabold">Suggestions</h2>
       <Card className="flex flex-col gap-2">
         {recs.length === 0 && <p className="text-sm text-muted-foreground">Play a few activities to see personalised suggestions.</p>}
