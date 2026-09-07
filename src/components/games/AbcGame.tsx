@@ -5,30 +5,43 @@ import { TracePad } from "./TracePad";
 import { say, sounds } from "@/services/audio";
 import { useProgress } from "@/services/progress";
 
-const ROUNDS = 4;
+const ROUNDS = 5;
 
 type Phase = "meet" | "match" | "trace";
 
 export function AbcGame() {
   const { state } = useProgress();
   const canTrace = state.child?.band !== "little";
+  const knownLetters = state.learned.letters;
   const { round, feedback, message, done, answer, restart } = useGameRound({ skill: "letters", rounds: ROUNDS });
   const [seed, setSeed] = useState(0);
   const [phase, setPhase] = useState<Phase>("meet");
   const [learned, setLearned] = useState<string[]>([]);
   const [wobble, setWobble] = useState<string | null>(null);
 
-  const { item, options } = useMemo(() => {
+  // Build a session deck that always reaches for letters this child hasn't met
+  // yet, so play walks through the whole alphabet instead of repeating A–E.
+  const deck = useMemo(() => {
     void seed;
-    const deck = shuffle(LETTERS);
-    const target = deck[0];
-    return { item: target, options: shuffle([target, deck[1], deck[2]]) };
-  }, [round, seed]);
+    const fresh = shuffle(LETTERS.filter((l) => !knownLetters.includes(l.letter)));
+    const seen = shuffle(LETTERS.filter((l) => knownLetters.includes(l.letter)));
+    return [...fresh, ...seen].slice(0, ROUNDS);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seed]);
+
+  const item = deck[Math.min(round, deck.length - 1)];
+
+  const options = useMemo(() => {
+    const others = shuffle(LETTERS.filter((l) => l.letter !== item.letter)).slice(0, 2);
+    return shuffle([item, ...others]);
+  }, [item]);
 
   useEffect(() => {
     setPhase("meet");
     if (!done) say(`${item.letter} says ${item.sound}`);
   }, [item, done]);
+
+  const totalKnown = new Set([...knownLetters, ...learned]).size;
 
   if (done) {
     return (
@@ -105,7 +118,7 @@ export function AbcGame() {
               onClick={() => {
                 const correct = o.letter === item.letter;
                 if (correct) {
-                  setLearned((l) => [...l, item.letter]);
+                  setLearned((l) => (l.includes(item.letter) ? l : [...l, item.letter]));
                   sounds.correct();
                   if (canTrace) {
                     say(`Yes! ${item.word}. Now trace it!`);
@@ -139,6 +152,28 @@ export function AbcGame() {
           }}
         />
       )}
+
+      <section className="mt-6 rounded-[1.5rem] bg-card p-4 shadow-[var(--shadow-soft)]">
+        <p className="mb-2 text-sm font-bold text-muted-foreground">
+          Alphabet journey: {totalKnown} of {LETTERS.length} letters
+        </p>
+        <ul className="flex flex-wrap gap-1.5" aria-label={`${totalKnown} of ${LETTERS.length} letters learned`}>
+          {LETTERS.map((l) => {
+            const met = knownLetters.includes(l.letter) || learned.includes(l.letter);
+            return (
+              <li
+                key={l.letter}
+                aria-label={met ? `${l.letter} learned` : `${l.letter} not yet`}
+                className={`flex size-7 items-center justify-center rounded-lg text-xs font-bold font-display ${
+                  met ? "bg-mint text-foreground" : "bg-muted/50 text-muted-foreground"
+                } ${l.letter === item.letter ? "ring-2 ring-primary" : ""}`}
+              >
+                {l.letter}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
     </GamePage>
   );
 }
