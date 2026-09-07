@@ -39,8 +39,17 @@ export function AbcGame() {
 
   useEffect(() => {
     setPhase("meet");
-    if (!done) say(`${item.letter} says ${item.sound}`);
+    if (!done) {
+      say(`${item.letter} says ${item.sound}`);
+      // Warm up the next voice lines so play never waits.
+      prefetchSay(
+        `${item.letter} says ${item.sound}. ${item.letter} for ${item.word}`,
+        `Which one starts with ${item.letter}?`,
+        `Trace the letter ${item.letter}!`,
+      );
+    }
   }, [item, done]);
+
 
   const totalKnown = new Set([...knownLetters, ...learned]).size;
 
