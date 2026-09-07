@@ -31,6 +31,8 @@ export type ProgressState = {
   skills: Record<SkillKey, { correct: number; attempts: number; completed: number }>;
   learned: { colors: string[]; letters: string[]; numbers: number[]; shapes: string[] };
   dailyPath: { date: string; done: number[] };
+  /** Per-letter mastery for the ABC learning path. */
+  letters: Record<string, { correct: number; attempts: number; traced: number }>;
   worldsUnlocked: number;
 };
 
@@ -60,6 +62,7 @@ export const DEFAULT_STATE: ProgressState = {
   },
   learned: { colors: [], letters: [], numbers: [], shapes: [] },
   dailyPath: { date: "", done: [] },
+  letters: {},
   worldsUnlocked: 1,
 };
 
@@ -77,6 +80,7 @@ function read(): ProgressState {
       skills: { ...DEFAULT_STATE.skills, ...(parsed.skills ?? {}) },
       learned: { ...DEFAULT_STATE.learned, ...(parsed.learned ?? {}) },
       dailyPath: parsed.dailyPath ?? DEFAULT_STATE.dailyPath,
+      letters: parsed.letters ?? {},
     };
   } catch {
     return DEFAULT_STATE;
@@ -151,6 +155,24 @@ export function recordAttempt(skill: SkillKey, correct: boolean) {
       stars: s.stars + (correct ? 1 : 0),
       xp: s.xp + (correct ? 2 : 0),
     });
+  });
+}
+
+/** Track how a single letter is going, for the parent ABC path. */
+export function recordLetter(letter: string, correct: boolean, traced = false) {
+  update((s) => {
+    const cur = s.letters[letter] ?? { correct: 0, attempts: 0, traced: 0 };
+    return {
+      ...s,
+      letters: {
+        ...s.letters,
+        [letter]: {
+          correct: cur.correct + (correct ? 1 : 0),
+          attempts: cur.attempts + 1,
+          traced: cur.traced + (traced ? 1 : 0),
+        },
+      },
+    };
   });
 }
 

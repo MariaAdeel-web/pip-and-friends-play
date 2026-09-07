@@ -14,6 +14,7 @@ import { Route as ParentsRouteImport } from './routes/parents'
 import { Route as PlayRouteImport } from './routes/play'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as WorldsRouteImport } from './routes/worlds'
+import { Route as ApiTtsRouteImport } from './routes/api/tts'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const WorldsRoute = WorldsRouteImport.update({
   path: '/worlds',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTtsRoute = ApiTtsRouteImport.update({
+  id: '/api/tts',
+  path: '/api/tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GameGameIdRoute = GameGameIdRouteImport.update({
   id: '/game/$gameId',
   path: '/game/$gameId',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/play': typeof PlayRoute
   '/rewards': typeof RewardsRoute
   '/worlds': typeof WorldsRoute
+  '/api/tts': typeof ApiTtsRoute
   '/game/$gameId': typeof GameGameIdRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/play': typeof PlayRoute
   '/rewards': typeof RewardsRoute
   '/worlds': typeof WorldsRoute
+  '/api/tts': typeof ApiTtsRoute
   '/game/$gameId': typeof GameGameIdRoute
 }
 export interface FileRoutesById {
@@ -70,14 +78,28 @@ export interface FileRoutesById {
   '/play': typeof PlayRoute
   '/rewards': typeof RewardsRoute
   '/worlds': typeof WorldsRoute
+  '/api/tts': typeof ApiTtsRoute
   '/game/$gameId': typeof GameGameIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/parents' | '/play' | '/rewards' | '/worlds' | '/game/$gameId'
+    | '/'
+    | '/parents'
+    | '/play'
+    | '/rewards'
+    | '/worlds'
+    | '/api/tts'
+    | '/game/$gameId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/parents' | '/play' | '/rewards' | '/worlds' | '/game/$gameId'
+  to:
+    | '/'
+    | '/parents'
+    | '/play'
+    | '/rewards'
+    | '/worlds'
+    | '/api/tts'
+    | '/game/$gameId'
   id:
     | '__root__'
     | '/'
@@ -85,6 +107,7 @@ export interface FileRouteTypes {
     | '/play'
     | '/rewards'
     | '/worlds'
+    | '/api/tts'
     | '/game/$gameId'
   fileRoutesById: FileRoutesById
 }
@@ -94,6 +117,7 @@ export interface RootRouteChildren {
   PlayRoute: typeof PlayRoute
   RewardsRoute: typeof RewardsRoute
   WorldsRoute: typeof WorldsRoute
+  ApiTtsRoute: typeof ApiTtsRoute
   GameGameIdRoute: typeof GameGameIdRoute
 }
 
@@ -134,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorldsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/tts': {
+      id: '/api/tts'
+      path: '/api/tts'
+      fullPath: '/api/tts'
+      preLoaderRoute: typeof ApiTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/game/$gameId': {
       id: '/game/$gameId'
       path: '/game/$gameId'
@@ -150,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayRoute: PlayRoute,
   RewardsRoute: RewardsRoute,
   WorldsRoute: WorldsRoute,
+  ApiTtsRoute: ApiTtsRoute,
   GameGameIdRoute: GameGameIdRoute,
 }
 export const routeTree = rootRouteImport

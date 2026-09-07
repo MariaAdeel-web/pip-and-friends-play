@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { LETTERS, shuffle } from "@/data/content";
 import { CompleteScreen, GamePage, useGameRound } from "./GameShell";
 import { TracePad } from "./TracePad";
-import { say, sounds } from "@/services/audio";
-import { useProgress } from "@/services/progress";
+import { prefetchSay, say, sounds } from "@/services/audio";
+import { recordLetter, useProgress } from "@/services/progress";
+
 
 const ROUNDS = 5;
 
@@ -38,8 +39,17 @@ export function AbcGame() {
 
   useEffect(() => {
     setPhase("meet");
-    if (!done) say(`${item.letter} says ${item.sound}`);
+    if (!done) {
+      say(`${item.letter} says ${item.sound}`);
+      // Warm up the next voice lines so play never waits.
+      prefetchSay(
+        `${item.letter} says ${item.sound}. ${item.letter} for ${item.word}`,
+        `Which one starts with ${item.letter}?`,
+        `Trace the letter ${item.letter}!`,
+      );
+    }
   }, [item, done]);
+
 
   const totalKnown = new Set([...knownLetters, ...learned]).size;
 
@@ -117,6 +127,7 @@ export function AbcGame() {
               aria-label={o.word}
               onClick={() => {
                 const correct = o.letter === item.letter;
+                recordLetter(item.letter, correct);
                 if (correct) {
                   setLearned((l) => (l.includes(item.letter) ? l : [...l, item.letter]));
                   sounds.correct();
@@ -147,11 +158,13 @@ export function AbcGame() {
         <TracePad
           glyph={item.letter}
           onResult={(ok) => {
+            recordLetter(item.letter, ok, ok);
             if (ok) answer(true, { praise: `Beautiful ${item.letter}!` });
             else answer(false);
           }}
         />
       )}
+
 
       <section className="mt-6 rounded-[1.5rem] bg-card p-4 shadow-[var(--shadow-soft)]">
         <p className="mb-2 text-sm font-bold text-muted-foreground">
