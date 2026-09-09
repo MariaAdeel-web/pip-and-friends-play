@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, BigButton, ScreenTitle } from "@/components/ui/Kit";
 import { Character } from "@/components/characters/Character";
+import { LETTERS } from "@/data/content";
+
 import { resetAll, useProgress, type SkillKey } from "@/services/progress";
 import { getRecommendations, needsPractice, strengths } from "@/services/recommendations";
 import { isSoundOn, setSoundOn } from "@/services/audio";
