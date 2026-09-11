@@ -8,9 +8,9 @@ import { sounds } from "@/services/audio";
 export const Route = createFileRoute("/worlds")({
   head: () => ({
     meta: [
-      { title: "Worlds Map — TinyTales Learning World" },
+      { title: "Worlds Map — Tiny Tales Learning World" },
       { name: "description", content: "Travel from the Learning Garden to Cloud Kingdom — new worlds unlock as your child plays." },
-      { property: "og:title", content: "Worlds Map — TinyTales Learning World" },
+      { property: "og:title", content: "Worlds Map — Tiny Tales Learning World" },
       { property: "og:description", content: "Six gentle worlds to explore, unlocked step by step." },
     ],
   }),

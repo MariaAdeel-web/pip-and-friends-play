@@ -10,13 +10,13 @@ import { useEffect, useRef, useState } from "react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TinyTales Learning World — Playful Learning for Ages 2–5" },
+      { title: "Tiny Tales Learning World — Playful Learning for Ages 2–5" },
       {
         name: "description",
         content:
           "A gentle, colorful learning world for toddlers: colors, shapes, ABC, counting, memory, puzzles and drawing games.",
       },
-      { property: "og:title", content: "TinyTales Learning World" },
+      { property: "og:title", content: "Tiny Tales Learning World" },
       {
         property: "og:description",
         content: "Learn a little. Play a little. Smile a lot. Original toddler learning games for ages 2–5.",

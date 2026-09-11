@@ -6,9 +6,9 @@ import { BADGES, useProgress } from "@/services/progress";
 export const Route = createFileRoute("/rewards")({
   head: () => ({
     meta: [
-      { title: "Rewards — TinyTales Learning World" },
+      { title: "Rewards — Tiny Tales Learning World" },
       { name: "description", content: "Stars, gems and gentle badges your child collects by learning through play." },
-      { property: "og:title", content: "Rewards — TinyTales Learning World" },
+      { property: "og:title", content: "Rewards — Tiny Tales Learning World" },
       { property: "og:description", content: "A calm, non-addictive reward shelf: stars, gems and badges." },
     ],
   }),

@@ -29,7 +29,7 @@ const GAMES: Record<string, () => React.JSX.Element> = {
 export const Route = createFileRoute("/game/$gameId")({
   head: ({ params }) => {
     const activity = ACTIVITIES.find((a) => a.id === params.gameId);
-    const title = activity ? `${activity.title} — TinyTales Learning World` : "Activity — TinyTales Learning World";
+    const title = activity ? `${activity.title} — Tiny Tales Learning World` : "Activity — Tiny Tales Learning World";
     const description = activity
       ? `${activity.blurb}. A gentle, hands-on activity for ages 2–5.`
       : "A gentle, hands-on learning activity for ages 2–5.";

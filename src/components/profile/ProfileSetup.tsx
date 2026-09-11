@@ -17,7 +17,7 @@ export function ProfileSetup() {
     <div className="mx-auto w-full max-w-lg px-5 pb-28 pt-8">
       <div className="flex flex-col items-center text-center">
         <Character id="pip" state="wave" size={120} />
-        <h1 className="mt-3 text-3xl font-extrabold">TinyTales Learning World</h1>
+        <h1 className="mt-3 text-3xl font-extrabold">Tiny Tales Learning World</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Learn a little. Play a little. Smile a lot.
         </p>

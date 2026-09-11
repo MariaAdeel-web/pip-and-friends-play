@@ -11,9 +11,9 @@ import { isSoundOn, setSoundOn } from "@/services/audio";
 export const Route = createFileRoute("/parents")({
   head: () => ({
     meta: [
-      { title: "Parent Dashboard — TinyTales Learning World" },
+      { title: "Parent Dashboard — Tiny Tales Learning World" },
       { name: "description", content: "A private, ad-free progress view for grown-ups: learning time, skills practiced and simple next steps." },
-      { property: "og:title", content: "Parent Dashboard — TinyTales Learning World" },
+      { property: "og:title", content: "Parent Dashboard — Tiny Tales Learning World" },
       { property: "og:description", content: "Track progress and get gentle, rule-based suggestions — no child data leaves the device." },
     ],
   }),
