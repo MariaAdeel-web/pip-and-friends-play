@@ -1,4 +1,4 @@
-# Pip's Playful Planet
+# Tiny tales Learning World
 
 Build a Complete Toddler Learning & Activity App
 
@@ -1406,3 +1406,4 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+https://pip-and-friends-play.lovable.app
