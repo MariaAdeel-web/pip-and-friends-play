@@ -1,5 +1,5 @@
 /**
- * Original mascot family for TinyTales Learning World.
+ * Original mascot family for Tiny Tales Learning World.
  * Each character is a pure inline SVG (tiny, crisp at any size, animatable via CSS)
  * driven by a shared animation-state contract so new AI-generated art can be
  * swapped in later behind the same <Character /> API.
